@@ -78,5 +78,24 @@ calcRow r cols = unfoldr phi (r, cols)
     phi (r, []) = Nothing
     phi (r, c:cs) = Just (r+c, (r+c, cs))
 
-calcMatrix [] cs = []
-calcMatrix (r:rs) cs = let ps = calcRow r cs in ps:calcMatrix rs ps
+-- calcMatrix [] cs = []
+-- calcMatrix (r:rs) cs = let ps = calcRow r cs in ps:calcMatrix rs ps
+
+-- cm ([],cs) = []
+-- cm (r:rs, cs) = let ps = calcRow r cs in ps:cm (rs, ps)
+
+calcMatrix :: ([Int],[Int]) -> [[Int]]
+calcMatrix = unfoldr psi
+  where
+    psi ([],   cs) = Nothing
+    psi (r:rs, cs) = Just (ps, (rs, ps))
+      where
+        ps = calcRow r cs
+
+drawMatrix :: [Int] -> [Int] -> IO ()
+drawMatrix rs cs = do
+  forM_ (calcMatrix (rs, cs)) putRow
+  where
+    putRow xs = do
+      forM_ xs (printf "%13d")
+      putStrLn ""

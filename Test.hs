@@ -11,33 +11,27 @@ cols = [8,2,4,6,1,8,9,3,1,7]
 main :: IO ()
 main = do
   putHdrRow cols
-  forM_ rows $ \r -> do
-    putRow r cols
+  forM_ rows (putRow cols)
   where
     putHdrRow cs = do
-      putStr "    "
-      forM_ cs (printf "%3d")
-      putStrLn ""
-      putStr "    "
-      putStrLn $ take (3*length cs) $ repeat '='
-    putRow x ys = do
-      printf "%3d|" x
-      forM_ ys $ \y -> do
-        putCol x y
-      putStrLn ""
+      putStr "    " >> forM_ cs (printf "%3d") >> putChar '\n'
+      putStr "    " >> putStrLn (take (3*length cs) $ repeat '=')
+    putRow ys x = printf "%3d|" x >> forM_ ys (putCol x) >> putChar '\n'
     putCol x y = printf "%3d" (x + y)
 
+-- naive
 sol rs cs (0, 0) = rs !! 0 + cs !! 0
 sol rs cs (0, j) = sol rs cs (0, j-1) + cs !! j
 sol rs cs (i, 0) = rs !! i + sol rs cs (i-1, 0)
 sol rs cs (i, j) = sol rs cs (i, j-1) + sol rs cs (i-1, j)
 
+
 mkMatrix :: [Int] -> [Int] -> IO ()
 mkMatrix rs cs = do
   forM_ [0..r'] $ \r -> do
     forM_ [0..c'] $ \c -> do
-      printf "%10d" $ sol' (r, c)
-    putStrLn ""
+      printf "%13d" $ sol' (r, c)
+    putChar '\n'
   where
     r' = length rs -1
     c' = length cs -1
@@ -92,10 +86,21 @@ calcMatrix = unfoldr psi
       where
         ps = calcRow r cs
 
-drawMatrix :: [Int] -> [Int] -> IO ()
-drawMatrix rs cs = do
-  forM_ (calcMatrix (rs, cs)) putRow
+draw :: (([Int], [Int]) -> [[Int]]) -> [Int] -> [Int] -> IO ()
+draw calc rs cs = do
+  putHdr
+  forM_ (zip rs anss) putRow
   where
-    putRow xs = do
-      forM_ xs (printf "%13d")
-      putStrLn ""
+    anss = calc (rs, cs)
+    digits = length . show . maximum
+    (dr, dr', dr'') = (digits rs, dr+1, dr'+1)
+    (ds, ds') = (digits (map maximum anss), ds+1)
+    pf = printf ("%" ++ show ds' ++ "d")
+    indent = putStr (replicate dr'' ' ')
+    
+    putHdr = do
+      indent >> forM_ cs pf >> putChar '\n'
+      indent >> putStr (replicate (length cs * ds') '=') >> putChar '\n'
+    putRow (x, ys) = do
+      printf ("%" ++ show dr' ++ "d|") x
+      forM_ ys pf >> putChar '\n'

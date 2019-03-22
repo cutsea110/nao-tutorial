@@ -9,15 +9,9 @@ rows = [4,2,5,6,7,1,3,9,3,2]
 cols = [8,2,4,6,1,8,9,3,1,7]
 
 main :: IO ()
-main = do
-  putHdrRow cols
-  forM_ rows (putRow cols)
+main = draw f rows cols
   where
-    putHdrRow cs = do
-      putStr "    " >> forM_ cs (printf "%3d") >> putChar '\n'
-      putStr "    " >> putStrLn (take (3*length cs) $ repeat '=')
-    putRow ys x = printf "%3d|" x >> forM_ ys (putCol x) >> putChar '\n'
-    putCol x y = printf "%3d" (x + y)
+    f (rs, cs) = [[r + c | c <- cs] | r <- rs]
 
 -- naive
 sol rs cs (0, 0) = rs !! 0 + cs !! 0
@@ -25,6 +19,9 @@ sol rs cs (0, j) = sol rs cs (0, j-1) + cs !! j
 sol rs cs (i, 0) = rs !! i + sol rs cs (i-1, 0)
 sol rs cs (i, j) = sol rs cs (i, j-1) + sol rs cs (i-1, j)
 
+sol' (rs, cs) = [[sol rs cs (i, j) | j <- [0..c']] | i <- [0..r']]
+  where
+    (r', c') = (length rs - 1, length cs - 1)
 
 mkMatrix :: [Int] -> [Int] -> IO ()
 mkMatrix rs cs = do
@@ -71,12 +68,6 @@ calcRow r cols = unfoldr phi (r, cols)
   where
     phi (r, []) = Nothing
     phi (r, c:cs) = Just (r+c, (r+c, cs))
-
--- calcMatrix [] cs = []
--- calcMatrix (r:rs) cs = let ps = calcRow r cs in ps:calcMatrix rs ps
-
--- cm ([],cs) = []
--- cm (r:rs, cs) = let ps = calcRow r cs in ps:cm (rs, ps)
 
 calcMatrix :: ([Int],[Int]) -> [[Int]]
 calcMatrix = unfoldr psi

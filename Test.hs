@@ -70,6 +70,7 @@ fib'' = snd . foldn ((0, 1), pair (snd, (+) <$> fst <*> snd))
 
 -- sol' (r, []) = (r, [])
 -- sol' (r, c:cs) = (r+c, cs)
+calcRow :: Num a => a -> [a] -> [a]
 calcRow r cols = unfoldr phi (r, cols)
   where
     phi (r, []) = Nothing

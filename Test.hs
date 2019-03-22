@@ -25,3 +25,8 @@ main = do
         putCol x y
       putStrLn ""
     putCol x y = printf "%3d" (x + y)
+
+sol rs cs (0, 0) = rs !! 0 + cs !! 0
+sol rs cs (0, j) = sol rs cs (0, j-1) + cs !! j
+sol rs cs (i, 0) = rs !! i + sol rs cs (i-1, 0)
+sol rs cs (i, j) = sol rs cs (i, j-1) + sol rs cs (i-1, j)

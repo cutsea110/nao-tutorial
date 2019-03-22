@@ -13,6 +13,9 @@ main = draw f rows cols
   where
     f (rs, cs) = [[r + c | c <- cs] | r <- rs]
 
+main2 :: IO ()
+main2 = draw calcMatrix rows cols
+
 -- naive
 sol rs cs (0, 0) = rs !! 0 + cs !! 0
 sol rs cs (0, j) = sol rs cs (0, j-1) + cs !! j

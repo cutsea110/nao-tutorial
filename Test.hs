@@ -30,3 +30,14 @@ sol rs cs (0, 0) = rs !! 0 + cs !! 0
 sol rs cs (0, j) = sol rs cs (0, j-1) + cs !! j
 sol rs cs (i, 0) = rs !! i + sol rs cs (i-1, 0)
 sol rs cs (i, j) = sol rs cs (i, j-1) + sol rs cs (i-1, j)
+
+main2 :: IO ()
+main2 = do
+  forM_ [0..r'] $ \r -> do
+    forM_ [0..c'] $ \c -> do
+      printf "%7d" $ sol' (r, c)
+    putStrLn ""
+  where
+    r' = length rows -1
+    c' = length cols -1
+    sol' = sol rows cols

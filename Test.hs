@@ -35,9 +35,24 @@ mkMatrix :: [Int] -> [Int] -> IO ()
 mkMatrix rs cs = do
   forM_ [0..r'] $ \r -> do
     forM_ [0..c'] $ \c -> do
-      printf "%7d" $ sol' (r, c)
+      printf "%10d" $ sol' (r, c)
     putStrLn ""
   where
     r' = length rs -1
     c' = length cs -1
     sol' = sol rs cs
+
+fib 0 = 1
+fib 1 = 1
+fib n = fib (n-1) + fib (n-2)
+
+fib' 0 = (0, 1)
+fib' n = let (x, y) = fib' (n-1) in (y, x+y)
+
+foldn (c, f) = u
+  where
+    u 0 = c
+    u n = f (u (n-1))
+
+pair (f, g) x = (f x, g x)
+fib'' = snd . foldn ((0, 1), pair (snd, (+) <$> fst <*> snd))

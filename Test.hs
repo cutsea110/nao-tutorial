@@ -4,6 +4,8 @@ import Control.Monad
 import Data.List (unfoldr)
 import Text.Printf
 
+import DrawMatrix (draw)
+
 rows,cols :: [Int]
 rows = [4,2,5,6,7,1,3,9,3,2]
 cols = [8,2,4,6,1,8,9,3,1,7]
@@ -22,6 +24,7 @@ sol rs cs (0, j) = sol rs cs (0, j-1) + cs !! j
 sol rs cs (i, 0) = rs !! i + sol rs cs (i-1, 0)
 sol rs cs (i, j) = sol rs cs (i, j-1) + sol rs cs (i-1, j)
 
+sol' :: ([Int], [Int]) -> [[Int]]
 sol' (rs, cs) = [[sol rs cs (i, j) | j <- [0..c']] | i <- [0..r']]
   where
     (r', c') = (length rs - 1, length cs - 1)
@@ -79,22 +82,3 @@ calcMatrix = unfoldr psi
     psi (r:rs, cs) = Just (ps, (rs, ps))
       where
         ps = calcRow r cs
-
-draw :: (([Int], [Int]) -> [[Int]]) -> [Int] -> [Int] -> IO ()
-draw calc rs cs = do
-  putHdr
-  forM_ (zip rs anss) putRow
-  where
-    anss = calc (rs, cs)
-    digits = length . show . maximum
-    (dr, dr', dr'') = (digits rs, dr+1, dr'+1)
-    (ds, ds') = (digits (map maximum anss), ds+1)
-    pf = printf ("%" ++ show ds' ++ "d")
-    indent = putStr (replicate dr'' ' ')
-    
-    putHdr = do
-      indent >> forM_ cs pf >> putChar '\n'
-      indent >> putStr (replicate (length cs * ds') '=') >> putChar '\n'
-    putRow (x, ys) = do
-      printf ("%" ++ show dr' ++ "d|") x
-      forM_ ys pf >> putChar '\n'

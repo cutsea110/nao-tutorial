@@ -1,6 +1,7 @@
 module Main where
 
 import Control.Monad
+import Data.List (unfoldr)
 import Text.Printf
 
 rows,cols :: [Int]
@@ -46,6 +47,13 @@ fib 0 = 1
 fib 1 = 1
 fib n = fib (n-1) + fib (n-2)
 
+{-
+    0   1   2   3   4   5   6   7   8   9  10
+----------------------------------------------
+fib 1   1   2   3   5   8  13  21  34  55  89
+      \   \   \   \   \   \   \   \   \   \
+    0   1   1   2   3   5   8  13  21  34  55
+-}
 fib' 0 = (0, 1)
 fib' n = let (x, y) = fib' (n-1) in (y, x+y)
 
@@ -56,3 +64,19 @@ foldn (c, f) = u
 
 pair (f, g) x = (f x, g x)
 fib'' = snd . foldn ((0, 1), pair (snd, (+) <$> fst <*> snd))
+
+{-
+      8  2  4  6  1  8  9  3  1  7
+    ==============================
+  4| 12 14 18 24 25 33 42 45 46 53
+-}
+
+-- sol' (r, []) = (r, [])
+-- sol' (r, c:cs) = (r+c, cs)
+calcRow r cols = unfoldr phi (r, cols)
+  where
+    phi (r, []) = Nothing
+    phi (r, c:cs) = Just (r+c, (r+c, cs))
+
+calcMatrix [] cs = []
+calcMatrix (r:rs) cs = let ps = calcRow r cs in ps:calcMatrix rs ps

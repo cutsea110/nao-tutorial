@@ -11,12 +11,20 @@ rows = [4,2,5,6,7,1,3,9,3,2]
 cols = [8,2,4,6,1,8,9,3,1,7]
 
 main :: IO ()
-main = draw f rows cols
+main = draw (Just 3) f rows cols
   where
     f (rs, cs) = [[r + c | c <- cs] | r <- rs]
 
 main2 :: IO ()
-main2 = draw calcMatrix rows cols
+main2 = draw (Just 6) calcMatrix rows cols
+
+main3 :: IO ()
+main3 = draw (Just 10) sol' rows cols
+
+main4 :: IO ()
+main4 = draw (Just 3) sol' xs xs
+  where
+    xs = replicate 20 0
 
 -- naive
 sol rs cs (0, 0) = rs !! 0 + cs !! 0

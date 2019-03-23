@@ -19,21 +19,21 @@ main2 :: IO ()
 main2 = draw (Just 6) tabulation rows cols
 
 main3 :: IO ()
-main3 = draw (Just 10) sol' rows cols
+main3 = draw (Just 10) naive' rows cols
 
 main4 :: IO ()
-main4 = draw (Just 3) sol' xs xs
+main4 = draw (Just 3) naive' xs xs
   where
     xs = replicate 20 0
 
 -- naive
-sol rs cs (0, 0) = rs !! 0 + cs !! 0
-sol rs cs (0, j) = sol rs cs (0, j-1) + cs !! j
-sol rs cs (i, 0) = rs !! i + sol rs cs (i-1, 0)
-sol rs cs (i, j) = sol rs cs (i, j-1) + sol rs cs (i-1, j)
+naive rs cs (0, 0) = rs !! 0 + cs !! 0
+naive rs cs (0, j) = naive rs cs (0, j-1) + cs !! j
+naive rs cs (i, 0) = rs !! i + naive rs cs (i-1, 0)
+naive rs cs (i, j) = naive rs cs (i, j-1) + naive rs cs (i-1, j)
 
-sol' :: ([Int], [Int]) -> [[Int]]
-sol' (rs, cs) = [[sol rs cs (i, j) | j <- [0..c']] | i <- [0..r']]
+naive' :: ([Int], [Int]) -> [[Int]]
+naive' (rs, cs) = [[naive rs cs (i, j) | j <- [0..c']] | i <- [0..r']]
   where
     (r', c') = (length rs - 1, length cs - 1)
 
@@ -46,7 +46,7 @@ mkMatrix rs cs = do
   where
     r' = length rs -1
     c' = length cs -1
-    sol' = sol rs cs
+    sol' = naive rs cs
 
 fib 0 = 1
 fib 1 = 1
@@ -76,8 +76,6 @@ fib'' = snd . foldn ((0, 1), pair (snd, (+) <$> fst <*> snd))
   4| 12 14 18 24 25 33 42 45 46 53
 -}
 
--- sol' (r, []) = (r, [])
--- sol' (r, c:cs) = (r+c, cs)
 calcRow :: Num a => a -> [a] -> [a]
 calcRow r cols = unfoldr phi (r, cols)
   where

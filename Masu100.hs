@@ -16,7 +16,7 @@ main = draw (Just 3) f rows cols
     f (rs, cs) = [[r + c | c <- cs] | r <- rs]
 
 main2 :: IO ()
-main2 = draw (Just 6) calcMatrix rows cols
+main2 = draw (Just 6) tabulation rows cols
 
 main3 :: IO ()
 main3 = draw (Just 10) sol' rows cols
@@ -84,8 +84,8 @@ calcRow r cols = unfoldr phi (r, cols)
     phi (r, []) = Nothing
     phi (r, c:cs) = Just (r+c, (r+c, cs))
 
-calcMatrix :: ([Int],[Int]) -> [[Int]]
-calcMatrix = unfoldr psi
+tabulation :: ([Int],[Int]) -> [[Int]]
+tabulation = unfoldr psi
   where
     psi ([],   cs) = Nothing
     psi (r:rs, cs) = Just (ps, (rs, ps))

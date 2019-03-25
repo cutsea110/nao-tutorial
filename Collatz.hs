@@ -5,7 +5,7 @@ import Data.Function (on)
 import Data.List
 import DP
 
-
+-- naive
 collatz :: Integral a => a -> [a]
 collatz n = go n []
   where
@@ -15,6 +15,7 @@ collatz n = go n []
 
 collatzLen mxN = maximumBy (compare `on` snd) $ map ((id &&& length) . collatz) [1..mxN]
 
+-- use DP
 collatz'  = dp $ \n ->
   if n <= 1
   then return [1]
@@ -24,8 +25,7 @@ collatz'  = dp $ \n ->
 
 solve' mxN = maximumBy (compare `on` (length.fst))  . flip zip [1..] . evalDPAll collatz' $ [1..mxN]
 
--- solve' mxN = maximum . flip zip [1..] . evalDPAll collatz' $ [1..mxN]
-
+-- ref.) http://d.hatena.ne.jp/toslunar/touch/20100408/1270719176
 solve nMax = snd . maximum . flip zip [1..] . evalDPAll collatzLength $ [1..nMax]
 
 collatzLength = dp $ \n ->

@@ -1,12 +1,16 @@
-module DrawMatrix (draw) where
+module DrawMatrix
+  ( drawWith
+  , draw
+  , draw'
+  ) where
 
 import Control.Monad (forM_)
 import Text.Printf (printf)
 
 type Width = Int
 
-draw :: Maybe Width -> (([Int], [Int]) -> [[Int]]) -> [Int] -> [Int] -> IO ()
-draw mw calc rs cs = do
+drawWith :: Maybe Width -> (([Int], [Int]) -> [[Int]]) -> [Int] -> [Int] -> IO ()
+drawWith mw calc rs cs = do
   putHdr
   forM_ (zip rs anss) putRow
   where
@@ -23,3 +27,6 @@ draw mw calc rs cs = do
     putRow (x, ys) = do
       printf ("%" ++ show dr' ++ "d|") x
       forM_ ys pf >> putChar '\n'
+
+draw = drawWith Nothing
+draw' = drawWith . Just

@@ -4,25 +4,25 @@ import Control.Monad
 import Data.List (unfoldr)
 import Text.Printf
 
-import DrawMatrix (draw)
+import DrawMatrix (draw, draw')
 
 rows,cols :: [Int]
 rows = [4,2,5,6,7,1,3,9,3,2]
 cols = [8,2,4,6,1,8,9,3,1,7]
 
 main :: IO ()
-main = draw (Just 3) f rows cols
+main = draw' 3 f rows cols
   where
     f (rs, cs) = [[r + c | c <- cs] | r <- rs]
 
 main2 :: IO ()
-main2 = draw (Just 6) tabulation rows cols
+main2 = draw' 6 tabulation rows cols
 
 main3 :: IO ()
-main3 = draw (Just 10) naive' rows cols
+main3 = draw' 10 naive' rows cols
 
 main4 :: IO ()
-main4 = draw (Just 3) naive' xs xs
+main4 = draw' 3 naive' xs xs
   where
     xs = replicate 20 0
 

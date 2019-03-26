@@ -16,12 +16,26 @@ collatz n = go n []
 collatzLen mxN = maximumBy (compare `on` snd) $ map ((id &&& length) . collatz) [1..mxN]
 
 -- use DP
+{-- Performance is Good! So this is correctly memowised, but order is upside down
+collatz' :: DP Integer [Integer]
 collatz'  = dp $ \n ->
   if n <= 1
   then return [1]
   else if even n
        then collatz' (n `div` 2) >>= return . (n:)
        else collatz' (3 * n + 1) >>= return . (n:)
+--}
+
+-- Performance is Bad! So this is NOT memowised, but order is collect
+collatz' :: DP Integer [Integer]
+collatz' = dp (go [])
+  where
+    go ret = \n ->
+      if n <= 1
+      then return (1:ret)
+      else if even n
+           then go (n:ret) (n `div` 2)
+           else go (n:ret) (3 * n + 1)
 
 solve' mxN = maximumBy (compare `on` (length.fst))  . flip zip [1..] . evalDPAll collatz' $ [1..mxN]
 

@@ -34,8 +34,8 @@ collatz' = dp (go [])
       if n <= 1
       then return (1:ret)
       else if even n
-           then go (n:ret) (n `div` 2)
-           else go (n:ret) (3 * n + 1)
+           then dp (go (n:ret)) (n `div` 2)
+           else dp (go (n:ret)) (3 * n + 1)
 
 solve' mxN = maximumBy (compare `on` (length.fst))  . flip zip [1..] . evalDPAll collatz' $ [1..mxN]
 

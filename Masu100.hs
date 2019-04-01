@@ -19,21 +19,21 @@ main2 :: IO ()
 main2 = draw' 6 tabulation rows cols
 
 main3 :: IO ()
-main3 = draw' 10 naive' rows cols
+main3 = draw' 10 naive rows cols
 
 main4 :: IO ()
-main4 = draw' 3 naive' xs xs
+main4 = draw' 3 naive xs xs
   where
     xs = replicate 20 0
 
 -- naive
-naive rs cs (0, 0) = rs !! 0 + cs !! 0
-naive rs cs (0, j) = naive rs cs (0, j-1) + cs !! j
-naive rs cs (i, 0) = rs !! i + naive rs cs (i-1, 0)
-naive rs cs (i, j) = naive rs cs (i, j-1) + naive rs cs (i-1, j)
+nv rs cs (0, 0) = rs !! 0 + cs !! 0
+nv rs cs (0, j) = nv rs cs (0, j-1) + cs !! j
+nv rs cs (i, 0) = rs !! i + nv rs cs (i-1, 0)
+nv rs cs (i, j) = nv rs cs (i, j-1) + nv rs cs (i-1, j)
 
-naive' :: ([Int], [Int]) -> [[Int]]
-naive' (rs, cs) = [[naive rs cs (i, j) | j <- [0..c']] | i <- [0..r']]
+naive :: ([Int], [Int]) -> [[Int]]
+naive (rs, cs) = [[nv rs cs (i, j) | j <- [0..c']] | i <- [0..r']]
   where
     (r', c') = (length rs - 1, length cs - 1)
 
@@ -46,7 +46,7 @@ mkMatrix rs cs = do
   where
     r' = length rs -1
     c' = length cs -1
-    sol' = naive rs cs
+    sol' = nv rs cs
 
 fib 0 = 1
 fib 1 = 1

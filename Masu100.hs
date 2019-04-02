@@ -85,7 +85,7 @@ calcRow r cols = unfoldr phi (r, cols)
 tabulation :: ([Int],[Int]) -> [[Int]]
 tabulation = unfoldr psi
   where
-    psi ([],   cs) = Nothing
-    psi (r:rs, cs) = Just (ps, (rs, ps))
+    psi (cs,   []) = Nothing
+    psi (cs, r:rs) = Just (ps, (ps, rs))
       where
         ps = calcRow r cs

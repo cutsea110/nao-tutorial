@@ -76,16 +76,12 @@ fib'' = snd . foldn ((0, 1), pair (snd, (+) <$> fst <*> snd))
   4| 12 14 18 24 25 33 42 45 46 53
 -}
 
+winder :: (a -> b -> c) -> (b, [a]) -> Maybe (c, (c, [a]))
+winder f (_, [])   = Nothing
+winder f (y, x:xs) = Just (y', (y', xs)) where y' = f x y
+
 calcRow :: Num a => a -> [a] -> [a]
-calcRow r cols = unfoldr phi (r, cols)
-  where
-    phi (r, []) = Nothing
-    phi (r, c:cs) = Just (r+c, (r+c, cs))
+calcRow r cols = unfoldr (winder (+)) (r, cols)
 
 tabulation :: ([Int],[Int]) -> [[Int]]
-tabulation = unfoldr psi
-  where
-    psi (cs,   []) = Nothing
-    psi (cs, r:rs) = Just (ps, (ps, rs))
-      where
-        ps = calcRow r cs
+tabulation = unfoldr (winder calcRow)

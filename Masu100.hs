@@ -77,8 +77,11 @@ fib'' = snd . foldn ((0, 1), pair (snd, (+) <$> fst <*> snd))
 -}
 
 winder :: (a -> b -> c) -> (b, [a]) -> Maybe (c, (c, [a]))
-winder f (_, [])   = Nothing
-winder f (y, x:xs) = Just (y', (y', xs)) where y' = f x y
+winder f = uncurry (wind f)
+
+wind :: (a -> b -> c) -> b -> [a] -> Maybe (c, (c, [a]))
+wind f _ [] = Nothing
+wind f y (x:xs) = Just (y', (y', xs)) where y' = f x y
 
 calcRow :: Num a => a -> [a] -> [a]
 calcRow r cols = unfoldr (winder (+)) (r, cols)

@@ -77,8 +77,9 @@ fib'' = snd . foldn ((0, 1), pair (snd, (+) <$> fst <*> snd))
 -}
 
 winder :: ((a, b) -> c) -> (b, [a]) -> Maybe (c, (c, [a]))
-winder f (_, []) = Nothing
-winder f (y, x:xs) = Just (y', (y', xs)) where y' = f (x, y)
+winder f (y, xxs) = case xxs of
+  []     -> Nothing
+  (x:xs) -> Just (y', (y', xs)) where y' = f (x, y)
 
 calcRow :: (Int, [Int]) -> [Int]
 calcRow = unfoldr (winder plus) where plus = uncurry (+)

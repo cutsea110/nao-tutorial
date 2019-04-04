@@ -19,7 +19,7 @@ main2 :: IO ()
 main2 = draw' 6 tabulation cols rows
 
 main3 :: IO ()
-main3 = draw' 10 naive cols rows
+main3 = draw' 6 naive cols rows
 
 main4 :: IO ()
 main4 = draw' 3 naive xs xs
@@ -27,26 +27,14 @@ main4 = draw' 3 naive xs xs
     xs = replicate 20 0
 
 -- naive
-nv rs cs (0, 0) = rs !! 0 + cs !! 0
-nv rs cs (0, j) = nv rs cs (0, j-1) + cs !! j
-nv rs cs (i, 0) = rs !! i + nv rs cs (i-1, 0)
-nv rs cs (i, j) = nv rs cs (i, j-1) + nv rs cs (i-1, j)
-
 naive :: ([Int], [Int]) -> [[Int]]
-naive (cs, rs) = [[nv rs cs (i, j) | j <- [0..c']] | i <- [0..r']]
+naive (cs, rs) = [[nv (i, j) | j <- [0..c']] | i <- [0..r']]
   where
     (c', r') = (length cs - 1, length rs - 1)
-
-mkMatrix :: [Int] -> [Int] -> IO ()
-mkMatrix rs cs = do
-  forM_ [0..r'] $ \r -> do
-    forM_ [0..c'] $ \c -> do
-      printf "%13d" $ sol' (r, c)
-    putChar '\n'
-  where
-    r' = length rs -1
-    c' = length cs -1
-    sol' = nv rs cs
+    nv (0, 0) = rs !! 0 + cs !! 0
+    nv (0, j) = nv (0, j-1) + cs !! j
+    nv (i, 0) = rs !! i + nv (i-1, 0)
+    nv (i, j) = nv (i, j-1) + nv (i-1, j)
 
 fib 0 = 1
 fib 1 = 1

@@ -33,9 +33,9 @@ nv rs cs (i, 0) = rs !! i + nv rs cs (i-1, 0)
 nv rs cs (i, j) = nv rs cs (i, j-1) + nv rs cs (i-1, j)
 
 naive :: ([Int], [Int]) -> [[Int]]
-naive (rs, cs) = [[nv rs cs (i, j) | j <- [0..c']] | i <- [0..r']]
+naive (cs, rs) = [[nv rs cs (i, j) | j <- [0..c']] | i <- [0..r']]
   where
-    (r', c') = (length rs - 1, length cs - 1)
+    (c', r') = (length cs - 1, length rs - 1)
 
 mkMatrix :: [Int] -> [Int] -> IO ()
 mkMatrix rs cs = do
